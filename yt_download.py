@@ -1,23 +1,33 @@
 import yt_dlp
 
 url = input("Digite a URL do vídeo do YouTube: ")
-download_option = input("Digite 'audio' para baixar só o áudio ou 'video' para baixar o vídeo: ").strip().lower()
+print("Escolha o tipo de download:")
+print("1 - Áudio")
+print("2 - Vídeo")
+opcao = input("Digite 1 ou 2: ").strip()
 
 ydl_opts = {
-    'outtmpl': '%(title)s.%(ext)s',  
-    'verbose': True,  
-    'extractaudio': True, 
-    'audioquality': 192,  
-    'format': 'bestaudio/best',  
+    'outtmpl': '%(title)s.%(ext)s',
+    'verbose': True,
 }
 
-if download_option == 'audio':
-    ydl_opts['format'] = 'bestaudio/best' 
-elif download_option == 'video':
-    ydl_opts['format'] = 'best'  
+if opcao == '1':
+    download_option = 'áudio'
+    ydl_opts.update({
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }]
+    })
+elif opcao == '2':
+    download_option = 'vídeo'
+    ydl_opts['format'] = 'best'
 else:
-    print("Opção inválida. Escolha 'audio' ou 'video'.")
+    print("Opção inválida. Digite 1 para áudio ou 2 para vídeo.")
     exit()
+
 try:
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
