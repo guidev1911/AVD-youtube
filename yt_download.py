@@ -1,36 +1,56 @@
 import yt_dlp
+import tkinter as tk
+from tkinter import messagebox
 
-url = input("Digite a URL do vídeo do YouTube: ")
-print("Escolha o tipo de download:")
-print("1 - Áudio")
-print("2 - Vídeo")
-opcao = input("Digite 1 ou 2: ").strip()
+def baixar():
+    url = entry_url.get()
+    opcao = var_opcao.get()
 
-ydl_opts = {
-    'outtmpl': '%(title)s.%(ext)s',
-    'verbose': True,
-}
+    if not url:
+        messagebox.showerror("Erro", "Digite a URL do vídeo.")
+        return
 
-if opcao == '1':
-    download_option = 'áudio'
-    ydl_opts.update({
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }]
-    })
-elif opcao == '2':
-    download_option = 'vídeo'
-    ydl_opts['format'] = 'best'
-else:
-    print("Opção inválida. Digite 1 para áudio ou 2 para vídeo.")
-    exit()
+    ydl_opts = {
+        'outtmpl': '%(title)s.%(ext)s',
+        'verbose': True,
+    }
 
-try:
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    print(f"{download_option.capitalize()} baixado com sucesso!")
-except Exception as e:
-    print(f"Erro ao baixar o conteúdo: {e}")
+    if opcao == '1':
+        ydl_opts.update({
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }]
+        })
+    elif opcao == '2':
+        ydl_opts['format'] = 'best'
+    else:
+        messagebox.showerror("Erro", "Selecione uma opção válida.")
+        return
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+        messagebox.showinfo("Sucesso", "Download concluído com sucesso!")
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao baixar: {e}")
+
+janela = tk.Tk()
+janela.title("YouTube Downloader")
+janela.geometry("400x200")
+
+tk.Label(janela, text="URL do vídeo:").pack(pady=5)
+entry_url = tk.Entry(janela, width=50)
+entry_url.pack()
+
+tk.Label(janela, text="Escolha o tipo de download:").pack(pady=5)
+
+var_opcao = tk.StringVar()
+tk.Radiobutton(janela, text="Áudio (MP3)", variable=var_opcao, value='1').pack()
+tk.Radiobutton(janela, text="Vídeo", variable=var_opcao, value='2').pack()
+
+tk.Button(janela, text="Baixar", command=baixar).pack(pady=10)
+
+janela.mainloop()
