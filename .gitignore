@@ -1,0 +1,32 @@
+# Ignorar pastas de build e distribuição
+build/
+dist/
+
+# Ignorar arquivos de distribuição Python
+*.egg-info/
+*.egg
+
+# Ignorar caches e arquivos temporários
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignorar arquivos de ambiente virtual
+venv/
+env/
+.venv/
+.env/
+
+# Ignorar configurações de IDEs comuns
+.vscode/
+.idea/
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos do pytest
+.pytest_cache/
